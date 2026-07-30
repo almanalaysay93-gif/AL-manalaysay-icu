@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <meta name="description" content="ICU Drip Rate Calculator — Compute IV drip rates for vasopressors, antiarrhythmics, vasodilators, sedatives, anticoagulants, and electrolytes. Based on SPMC Drips Computations.">
+  <meta name="theme-color" content="#F97316">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <title>AL Manalaysay ICU Drip Calculator — SPMC</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='80' font-size='80'>💧</text></svg>">
+</head>
+<body>
+
+  <!-- ════════ Header ════════ -->
+  <header class="app-header">
+    <div class="header-top">
+      <div class="header-brand">
+        <div class="header-icon">💧</div>
+        <div class="header-title">
+          <h1>AL Manalaysay ICU Drip Calculator</h1>
+          <p>SPMC Drips Computations</p>
+        </div>
+      </div>
+      <div class="header-actions">
+        <button class="header-btn" onclick="openMathCalc()" title="Clinical Math Calculator" aria-label="Open clinical math calculator">
+          🧮
+        </button>
+        <button class="header-btn" onclick="openQuickRef()" title="Quick Reference" aria-label="Open quick reference panel">
+          📖
+        </button>
+      </div>
+    </div>
+
+    <!-- Search -->
+    <div class="search-container">
+      <div class="search-wrapper">
+        <span class="search-icon">🔍</span>
+        <input type="text" class="search-input" id="searchInput"
+               placeholder="Search drugs (e.g. Dopamine, Levophed...)"
+               autocomplete="off" spellcheck="false">
+        <button class="search-clear" onclick="clearSearch()" aria-label="Clear search">✕</button>
+      </div>
+    </div>
+
+    <!-- Category Pills -->
+    <div class="category-bar">
+      <div class="category-pills" id="categoryPills"></div>
+    </div>
+  </header>
+
+  <!-- ════════ Main Content ════════ -->
+  <main class="app-main">
+    <div class="drug-grid" id="drugGrid"></div>
+  </main>
+
+  <!-- ════════ Calculator Panel (Slide-in) ════════ -->
+  <div class="calc-overlay" id="calcOverlay"></div>
+  <div class="calc-panel" id="calcPanel">
+    <div class="calc-panel-header">
+      <div class="calc-panel-top">
+        <button class="calc-back-btn" onclick="closeCalculator()" aria-label="Close calculator">←</button>
+        <span></span>
+      </div>
+      <div class="calc-drug-name" id="calcDrugName"></div>
+      <div class="calc-drug-generic" id="calcDrugGeneric"></div>
+      <div class="calc-drug-formulation" id="calcDrugFormulation"></div>
+    </div>
+    <div class="calc-body" id="calcPanelContent"></div>
+
+    <!-- ════════ Floating Transparent Orange Back Button ════════ -->
+    <button class="calc-floating-back-btn" onclick="closeCalculator()" aria-label="Back to medications list" title="Back to medications list">
+      <span style="font-size: 1.1rem; font-weight: 900;">←</span>
+      <span style="font-size: 0.82rem; font-weight: 700; letter-spacing: 0.3px;">Back</span>
+    </button>
+  </div>
+
+  <!-- ════════ Quick Reference Panel (Slide-in from left) ════════ -->
+  <div class="quick-ref-overlay" id="quickRefOverlay"></div>
+  <div class="quick-ref-panel" id="quickRefPanel">
+    <div class="quick-ref-header">
+      <h2>📖 Quick Reference</h2>
+      <button class="quick-ref-close" onclick="closeQuickRef()" aria-label="Close reference panel">✕</button>
+    </div>
+    <div class="quick-ref-body" id="quickRefBody"></div>
+  </div>
+
+  <!-- ════════ Clinical Math Calculator Modal ════════ -->
+  <div class="math-calc-overlay" id="mathCalcOverlay">
+    <div class="math-calc-modal">
+      <div class="math-calc-header">
+        <h3>🧮 Handheld Calculator</h3>
+        <button class="math-calc-close" onclick="closeMathCalc()" aria-label="Close math calculator">✕</button>
+      </div>
+      <div class="math-calc-screen">
+        <div class="math-calc-history" id="mathCalcHistory"></div>
+        <div class="math-calc-output" id="mathCalcOutput">0</div>
+      </div>
+      <div class="math-calc-grid">
+        <button class="math-btn action" onclick="mathCalcInput('C')">C</button>
+        <button class="math-btn action" onclick="mathCalcInput('pm')">±</button>
+        <button class="math-btn action" onclick="mathCalcInput('%')">%</button>
+        <button class="math-btn op" onclick="mathCalcInput('/')">÷</button>
+
+        <button class="math-btn" onclick="mathCalcInput('7')">7</button>
+        <button class="math-btn" onclick="mathCalcInput('8')">8</button>
+        <button class="math-btn" onclick="mathCalcInput('9')">9</button>
+        <button class="math-btn op" onclick="mathCalcInput('*')">×</button>
+
+        <button class="math-btn" onclick="mathCalcInput('4')">4</button>
+        <button class="math-btn" onclick="mathCalcInput('5')">5</button>
+        <button class="math-btn" onclick="mathCalcInput('6')">6</button>
+        <button class="math-btn op" onclick="mathCalcInput('-')">−</button>
+
+        <button class="math-btn" onclick="mathCalcInput('1')">1</button>
+        <button class="math-btn" onclick="mathCalcInput('2')">2</button>
+        <button class="math-btn" onclick="mathCalcInput('3')">3</button>
+        <button class="math-btn op" onclick="mathCalcInput('+')">+</button>
+
+        <button class="math-btn action" onclick="mathCalcInput('back')">⌫</button>
+        <button class="math-btn" onclick="mathCalcInput('0')">0</button>
+        <button class="math-btn" onclick="mathCalcInput('.')">.</button>
+        <button class="math-btn equals" onclick="mathCalcInput('=')">=</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════════ Dosing Table & Spreadsheet Exporter Modal ════════ -->
+  <div class="dosing-table-overlay" id="dosingTableOverlay" onclick="if(event.target===this) closeDosingTable()">
+    <div class="dosing-table-modal">
+      <div class="dosing-table-header">
+        <div>
+          <h3>📊 Bedside Dosing Table & Computation Guide</h3>
+          <div class="dosing-table-sub" id="dosingTableSub">Full dosage progression & drop rate chart</div>
+        </div>
+        <button class="math-calc-close" onclick="closeDosingTable()" aria-label="Close modal">✕</button>
+      </div>
+
+      <div class="dosing-table-toolbar">
+        <div style="font-size: 0.8rem; font-weight: 700; color: var(--orange-700);">
+          Export Options:
+        </div>
+        <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+          <button class="dosing-table-btn dosing-table-btn-excel" onclick="exportDosingTableCSV()">
+            📥 Download Excel File (.csv)
+          </button>
+          <button class="dosing-table-btn dosing-table-btn-sheets" onclick="copyDosingTableTSV()">
+            📋 Copy for Google Sheets
+          </button>
+        </div>
+      </div>
+
+      <div class="dosing-table-body" id="dosingTableBody">
+        <!-- Dynamically generated table content -->
+      </div>
+    </div>
+  </div>
+
+  <!-- ════════ Disclaimer ════════ -->
+  <footer style="text-align:center; padding: 24px 20px 40px; font-size: 0.72rem; color: var(--gray-400); line-height: 1.5;">
+    <strong>⚠️ Clinical Disclaimer:</strong> This calculator is a reference tool only.
+    Always verify calculations independently. Not a substitute for clinical judgment.<br>
+    Based on Southern Philippines Medical Center (SPMC) Drips Computations.
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,14 @@
+node_modules/
+.DS_Store
+Thumbs.db
+*.log
+android-apk/.gradle/
+android-apk/app/build/
+android-apk/build/
+android-apk/.idea/
+desktop-app/bin/
+desktop-app/obj/
+desktop-release/
+desktop-standalone/
+AL_Manalaysay_ICU_Drip_Calculator_Desktop/
+*.exe
