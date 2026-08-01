@@ -1,25 +1,26 @@
 /* ============================================================
    ICU Drip Rate Calculator — Design System
-   Theme: Orange & White Medical UI
+   Theme: Medical Blue UI
    ============================================================ */
 
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
 
 /* ── CSS Custom Properties ── */
 :root {
-  /* ── Gold Palette (Dominant Theme) ── */
-  --gold-50: #FFFBEB;
-  --gold-100: #FEF3C7;
-  --gold-200: #FDE68A;
-  --gold-300: #FCD34D;
-  --gold-400: #FBBF24;
-  --gold-500: #F59E0B;
-  --gold-600: #D97706;
-  --gold-700: #B45309;
-  --gold-800: #92400E;
-  --gold-900: #78350F;
+  /* ── Medical Blue Palette ── */
+  --blue-50: #EFF6FF;
+  --blue-100: #DBEAFE;
+  --blue-200: #BFDBFE;
+  --blue-300: #93C5FD;
+  --blue-400: #60A5FA;
+  --blue-500: #2563EB;
+  --blue-600: #1D4ED8;
+  --blue-700: #1E40AF;
+  --blue-800: #1E3A8A;
+  --blue-900: #0F2B5B;
+  --blue-950: #023B72;
 
-  /* ── Slate / Charcoal Grey Palette (Secondary System) ── */
+  /* ── Slate / Charcoal Grey Palette ── */
   --slate-50: #F8FAFC;
   --slate-100: #F1F5F9;
   --slate-200: #E2E8F0;
@@ -31,17 +32,17 @@
   --slate-800: #1E293B;
   --slate-900: #0F172A;
 
-  /* ── Mapped System Colors ── */
-  --orange-50: #FFFBEB;
-  --orange-100: #FEF3C7;
-  --orange-200: #FDE68A;
-  --orange-300: #FCD34D;
-  --orange-400: #FBBF24;
-  --orange-500: #F59E0B;
-  --orange-600: #D97706;
-  --orange-700: #B45309;
-  --orange-800: #92400E;
-  --orange-900: #78350F;
+  /* ── Mapped System Colors to Medical Blue ── */
+  --orange-50: #EFF6FF;
+  --orange-100: #DBEAFE;
+  --orange-200: #BFDBFE;
+  --orange-300: #93C5FD;
+  --orange-400: #60A5FA;
+  --orange-500: #2563EB;
+  --orange-600: #1D4ED8;
+  --orange-700: #1E40AF;
+  --orange-800: #1E3A8A;
+  --orange-900: #023B72;
 
   --white: #FFFFFF;
   --gray-50: #F8FAFC;
@@ -57,19 +58,19 @@
 
   --success: #10B981;
   --success-bg: #ECFDF5;
-  --warning: #D97706;
+  --warning: #F59E0B;
   --warning-bg: #FFFBEB;
   --danger: #EF4444;
   --danger-bg: #FEF2F2;
-  --info: #3B82F6;
+  --info: #2563EB;
   --info-bg: #EFF6FF;
 
   --shadow-sm: 0 1px 2px rgba(15, 23, 42, 0.05);
   --shadow-md: 0 4px 12px rgba(15, 23, 42, 0.08);
   --shadow-lg: 0 8px 30px rgba(15, 23, 42, 0.12);
   --shadow-xl: 0 20px 50px rgba(15, 23, 42, 0.15);
-  --shadow-orange: 0 4px 20px rgba(217, 119, 6, 0.35);
-  --shadow-gold: 0 6px 24px rgba(245, 158, 11, 0.4);
+  --shadow-orange: 0 4px 20px rgba(37, 99, 235, 0.35);
+  --shadow-blue: 0 6px 24px rgba(2, 59, 114, 0.4);
 
   --radius-sm: 8px;
   --radius-md: 12px;
@@ -83,8 +84,8 @@
   --transition-spring: 500ms cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
-/* ── Reset & Base ── */
-*, *::before, *::after {
+/* ── Reset & Global ── */
+* {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
@@ -108,18 +109,18 @@ body {
 /* ── Scrollbar ── */
 ::-webkit-scrollbar { width: 6px; height: 6px; }
 ::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: var(--orange-300); border-radius: var(--radius-full); }
-::-webkit-scrollbar-thumb:hover { background: var(--orange-400); }
+::-webkit-scrollbar-thumb { background: var(--blue-300); border-radius: var(--radius-full); }
+::-webkit-scrollbar-thumb:hover { background: var(--blue-400); }
 
 /* ── Header ── */
 .app-header {
-  background: linear-gradient(135deg, #F59E0B 0%, #D97706 50%, #B45309 100%);
+  background: linear-gradient(135deg, #023B72 0%, #1E40AF 50%, #2563EB 100%);
   color: var(--white);
   padding: 0;
   position: sticky;
   top: 0;
   z-index: 100;
-  box-shadow: 0 4px 25px rgba(217, 119, 6, 0.4);
+  box-shadow: 0 4px 25px rgba(2, 59, 114, 0.4);
 }
 
 .header-top {
