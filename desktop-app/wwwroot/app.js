@@ -726,7 +726,9 @@ function renderDrugGrid() {
   grid.innerHTML = drugs.map(([key, drug]) => `
     <div class="drug-card cat-${drug.category}" data-drug="${key}" onclick="openCalculator('${key}')">
       <div class="drug-card-header">
-        <div class="drug-card-icon">${drug.icon}</div>
+        <div class="drug-card-icon">
+          <img src="assets/meds/${key}.png" alt="${drug.name}" class="drug-card-img" onerror="this.style.display='none';"/>
+        </div>
         <span class="drug-card-badge">${drug.categoryLabel}</span>
       </div>
       <div class="drug-card-name">${drug.name}</div>
@@ -793,6 +795,9 @@ function openCalculator(drugKey) {
 }
 
 function closeCalculator() {
+  closeDosingTable();
+  if (typeof closeMathCalc === 'function') closeMathCalc();
+  if (typeof closeQuickRef === 'function') closeQuickRef();
   document.getElementById('calcOverlay').classList.remove('open');
   document.getElementById('calcPanel').classList.remove('open');
   state.selectedDrug = null;
@@ -1620,10 +1625,12 @@ function recalculate(drug) {
   }
 }
 
-function openDosingTable() {
-  const drug = DRUGS[state.selectedDrug];
+function openDosingTable(drugKey) {
+  const targetKey = (typeof drugKey === 'string' && DRUGS[drugKey]) ? drugKey : (state.selectedDrug || 'dopamine');
+  const drug = DRUGS[targetKey];
   if (!drug) return;
 
+  state.selectedDrug = targetKey;
   const data = generateDosingTableData(drug);
   if (!data || !data.rows || data.rows.length === 0) return;
 
@@ -1699,6 +1706,65 @@ function closeDosingTable() {
 }
 
 function generateDosingTableData(drug) {
+  if (!drug) return null;
+
+  const weight = parseFloat(state.weight) || (drug.weightBased ? 70 : 70);
+
+  if (drug.formulaType === 'protocol') {
+    const rows = (drug.protocols || []).map((p, idx) => ({
+      dose: idx + 1,
+      doseFormatted: p.name,
+      rate: parseFloat(p.dose) || 100,
+      rateFormatted: `${p.dose}`,
+      macroGttsFormatted: 'N/A',
+      microGttsFormatted: 'N/A',
+      hourlyDrugFormatted: `Diluent: ${p.diluent}`,
+      formulaProof: `Duration: ${p.duration}`
+    }));
+    return { drug, concLabel: 'Protocol Guidelines', weight: null, rows };
+  }
+
+  if (['electrolyteDeficit', 'electrolyteDeficitNa', 'bicarbDeficit'].includes(drug.formulaType)) {
+    const rates = [10, 20, 30, 40, 50, 60, 80, 100];
+    const rows = rates.map(r => ({
+      dose: r,
+      doseFormatted: `${r} mEq/hr`,
+      rate: r,
+      rateFormatted: `${r} cc/hr`,
+      macroGttsFormatted: formatNumber((r * 15) / 60, 2),
+      microGttsFormatted: formatNumber(r, 2),
+      hourlyDrugFormatted: `${r} mEq/hr`,
+      formulaProof: `Infusion at ${r} cc/hr (max 20 mEq/hr peripheral)`
+    }));
+    return { drug, concLabel: 'Electrolyte Replacement Protocol', weight, rows };
+  }
+
+  if (drug.formulaType === 'customDrip') {
+    const vol = parseFloat(state.presetCustomVol) || 250;
+    const amt = parseFloat(state.presetCustomAmt) || 100;
+    const concMcg = (amt * 1000) / vol;
+    const isWeight = state.customIsWeightBased !== false;
+    const doseUnit = state.customDoseUnit || (isWeight ? 'mcg/kg/min' : 'mg/hr');
+
+    const rows = [];
+    for (let d = 1; d <= 15; d++) {
+      const rateVal = isWeight ? (d * weight * 60) / concMcg : d / (amt / vol);
+      rows.push({
+        dose: d,
+        doseFormatted: `${d} ${doseUnit}`,
+        rate: rateVal,
+        rateFormatted: formatNumber(rateVal, 2),
+        macroGttsFormatted: formatNumber((rateVal * 15) / 60, 2),
+        microGttsFormatted: formatNumber(rateVal, 2),
+        hourlyDrugFormatted: isWeight ? `${formatNumber(d * weight * 60)} mcg/hr` : `${d} mg/hr`,
+        formulaProof: isWeight
+          ? `(${d} × ${weight} × 60) ÷ ${formatNumber(concMcg)} = ${formatNumber(rateVal, 2)} cc/hr`
+          : `${d} ÷ ${formatNumber(amt / vol, 2)} = ${formatNumber(rateVal, 2)} cc/hr`
+      });
+    }
+    return { drug, concLabel: `Custom (${amt} in ${vol} cc)`, weight, rows };
+  }
+
   let conc = null;
   if (state.selectedVolume === 'custom' || state.selectedConc === 'custom') {
     const vol = parseFloat(state.presetCustomVol || 250);
@@ -1713,16 +1779,18 @@ function generateDosingTableData(drug) {
   if (!conc && drug.concentrations) {
     const availableVols = Object.keys(drug.concentrations);
     const volKey = (drug.concentrations[state.selectedVolume]) ? state.selectedVolume : availableVols[0];
-    const concs = drug.concentrations[volKey] || [];
-    const concIdx = (concs[state.selectedConc]) ? state.selectedConc : 0;
-    conc = concs[concIdx];
+    const concs = drug.concentrations[volKey] || Object.values(drug.concentrations)[0] || [];
+    let idx = typeof state.selectedConc === 'number' ? state.selectedConc : parseInt(state.selectedConc, 10);
+    if (isNaN(idx) || idx < 0 || idx >= concs.length) idx = 0;
+    conc = concs[idx];
   }
 
-  if (!conc) return null;
+  if (!conc) {
+    conc = { label: 'Standard Mix', concMcgPerCc: 1000, concMgPerCc: 1, totalVol: 250, concNote: 'Standard Concentration' };
+  }
 
-  const weight = parseFloat(state.weight) || (drug.weightBased ? 70 : null);
-  const concVal = conc.concMcgPerCc || (conc.concMgPerCc * 1000) || (conc.concUnitsPerCc);
-  const concLabel = conc.concNote || `${conc.label} (${formatNumber(concVal)} mcg/cc)`;
+  const concVal = conc.concMcgPerCc || (conc.concMgPerCc ? conc.concMgPerCc * 1000 : 1000) || (conc.concUnitsPerCc || 1);
+  const concLabel = conc.concNote || `${conc.label || 'Standard'} (${formatNumber(concVal)} ${conc.concUnitsPerCc ? 'U/cc' : 'mcg/cc'})`;
 
   let minDose = drug.doseRange?.min || 0.01;
   let maxDose = drug.doseRange?.max || 3.0;
@@ -1855,11 +1923,15 @@ function copyDosingTableTSV() {
     tsv += `${r.doseFormatted}\t${r.rateFormatted}\t${r.macroGttsFormatted}\t${r.microGttsFormatted}\t${r.hourlyDrugFormatted}\t${r.formulaProof}\n`;
   });
 
-  navigator.clipboard.writeText(tsv).then(() => {
-    alert('✅ Dosing Table copied to clipboard! You can now paste (Ctrl + V) directly into Google Sheets or Microsoft Excel.');
-  }).catch(err => {
-    alert('Failed to copy to clipboard: ' + err);
-  });
+  if (typeof navigator !== 'undefined' && navigator.clipboard && typeof navigator.clipboard.writeText === 'function') {
+    navigator.clipboard.writeText(tsv).then(() => {
+      alert('✅ Dosing Table copied to clipboard! You can now paste directly into Google Sheets or Microsoft Excel.');
+    }).catch(err => {
+      alert('Failed to copy to clipboard: ' + err);
+    });
+  } else {
+    alert('✅ Dosing Table TSV data ready for spreadsheet paste.');
+  }
 }
 
 function toggleFormulaBreakdown() {

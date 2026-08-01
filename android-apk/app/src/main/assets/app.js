@@ -726,7 +726,9 @@ function renderDrugGrid() {
   grid.innerHTML = drugs.map(([key, drug]) => `
     <div class="drug-card cat-${drug.category}" data-drug="${key}" onclick="openCalculator('${key}')">
       <div class="drug-card-header">
-        <div class="drug-card-icon">${drug.icon}</div>
+        <div class="drug-card-icon">
+          <img src="assets/meds/${key}.png" alt="${drug.name}" class="drug-card-img" onerror="this.style.display='none';"/>
+        </div>
         <span class="drug-card-badge">${drug.categoryLabel}</span>
       </div>
       <div class="drug-card-name">${drug.name}</div>
