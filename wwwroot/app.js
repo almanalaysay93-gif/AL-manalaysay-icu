@@ -725,20 +725,20 @@ function renderDrugGrid() {
 
   grid.innerHTML = drugs.map(([key, drug]) => `
     <div class="drug-card cat-${drug.category}" data-drug="${key}" onclick="openCalculator('${key}')">
-      <div class="drug-card-header">
-        <div class="drug-card-icon">
-          <img src="assets/meds/${key}.png" alt="${drug.name}" class="drug-card-img" onerror="this.style.display='none';"/>
-        </div>
+      <div class="drug-card-banner">
+        <img src="assets/meds/${key}.png" alt="${drug.name}" class="drug-card-banner-img" onerror="this.style.display='none';"/>
         <span class="drug-card-badge">${drug.categoryLabel}</span>
       </div>
-      <div class="drug-card-name">${drug.name}</div>
-      <div class="drug-card-generic">${drug.generic}</div>
-      <div class="drug-card-info">
-        <div class="drug-card-tag">
-          <span>📐</span> ${drug.doseUnit}
+      <div class="drug-card-body">
+        <div class="drug-card-name">${drug.name}</div>
+        <div class="drug-card-generic">${drug.generic}</div>
+        <div class="drug-card-info">
+          <div class="drug-card-tag">
+            <span>📐</span> ${drug.doseUnit}
+          </div>
+          ${drug.weightBased ? '<div class="drug-card-tag"><span>⚖️</span> Weight-based</div>' : ''}
+          ${drug.doseRange ? `<div class="drug-card-tag"><span>📊</span> ${drug.doseRange.min}–${drug.doseRange.max}</div>` : ''}
         </div>
-        ${drug.weightBased ? '<div class="drug-card-tag"><span>⚖️</span> Weight-based</div>' : ''}
-        ${drug.doseRange ? `<div class="drug-card-tag"><span>📊</span> ${drug.doseRange.min}–${drug.doseRange.max}</div>` : ''}
       </div>
     </div>
   `).join('');
