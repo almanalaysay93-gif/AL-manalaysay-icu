@@ -112,86 +112,153 @@ body {
 ::-webkit-scrollbar-thumb { background: var(--blue-300); border-radius: var(--radius-full); }
 ::-webkit-scrollbar-thumb:hover { background: var(--blue-400); }
 
-/* ── Header ── */
-.app-header {
-  background: linear-gradient(135deg, #023B72 0%, #1E40AF 50%, #2563EB 100%);
+/* ── ICU Telemetry Theme Header ── */
+.app-header.icu-theme-header {
+  background: linear-gradient(135deg, #022B54 0%, #0A3A6B 50%, #064E89 100%);
   color: var(--white);
   padding: 0;
   position: sticky;
   top: 0;
   z-index: 100;
-  box-shadow: 0 4px 25px rgba(2, 59, 114, 0.4);
+  box-shadow: 0 8px 30px rgba(2, 43, 84, 0.5), 0 2px 10px rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-bottom: 1px solid rgba(34, 211, 238, 0.25);
+  overflow: hidden;
+}
+
+/* ECG Pulse Heartbeat Wave Animation */
+.icu-ecg-bar {
+  width: 100%;
+  height: 18px;
+  background: rgba(2, 30, 58, 0.6);
+  position: relative;
+  overflow: hidden;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.icu-ecg-wave {
+  width: 200%;
+  height: 100%;
+  display: block;
+  animation: ecgScroll 8s linear infinite;
+}
+
+@keyframes ecgScroll {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
 }
 
 .header-top {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 16px 20px 12px;
+  padding: 14px 20px 10px;
 }
 
 .header-brand {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 14px;
 }
 
-.header-icon {
-  width: 40px;
-  height: 40px;
-  background: rgba(255,255,255,0.2);
+.icu-brand-badge {
+  width: 44px;
+  height: 44px;
+  background: linear-gradient(135deg, rgba(6, 182, 212, 0.25), rgba(37, 99, 235, 0.35));
+  border: 1.5px solid rgba(34, 211, 238, 0.45);
   border-radius: var(--radius-md);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 20px;
+  color: #22D3EE;
+  box-shadow: 0 4px 15px rgba(6, 182, 212, 0.3);
   backdrop-filter: blur(10px);
+  transition: var(--transition-fast);
+}
+
+.icu-brand-badge:hover {
+  transform: scale(1.05);
+  border-color: #22D3EE;
+  box-shadow: 0 6px 20px rgba(34, 211, 238, 0.5);
+}
+
+.header-title {
+  display: flex;
+  flex-direction: column;
+}
+
+.icu-status-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 2px;
+}
+
+.icu-live-dot {
+  width: 7px;
+  height: 7px;
+  background: #10B981;
+  border-radius: 50%;
+  box-shadow: 0 0 8px #10B981;
+  animation: livePulse 2s infinite;
+}
+
+@keyframes livePulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.4; transform: scale(0.85); }
+}
+
+.icu-status-text {
+  font-size: 0.62rem;
+  font-weight: 800;
+  letter-spacing: 0.8px;
+  color: #22D3EE;
+  text-transform: uppercase;
 }
 
 .header-title h1 {
-  font-size: 1.1rem;
-  font-weight: 700;
+  font-size: 1.15rem;
+  font-weight: 800;
   letter-spacing: -0.02em;
   line-height: 1.2;
+  color: #FFFFFF;
 }
 
 .header-title p {
-  font-size: 0.7rem;
+  font-size: 0.68rem;
   opacity: 0.85;
-  font-weight: 400;
-  letter-spacing: 0.02em;
-  text-transform: uppercase;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  color: var(--blue-200);
 }
 
 .header-actions {
   display: flex;
-  gap: 8px;
+  gap: 10px;
 }
 
-.header-btn {
-  width: 40px;
-  height: 40px;
-  border: none;
-  background: rgba(255,255,255,0.15);
+.icu-action-btn {
+  width: 42px;
+  height: 42px;
+  border: 1.5px solid rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.1);
   color: var(--white);
   border-radius: var(--radius-md);
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 18px;
   transition: var(--transition-fast);
   backdrop-filter: blur(10px);
 }
 
-.header-btn:hover {
-  background: rgba(255,255,255,0.25);
-  transform: scale(1.05);
-}
-
-.header-btn.active {
-  background: var(--white);
-  color: var(--orange-600);
+.icu-action-btn:hover {
+  background: rgba(34, 211, 238, 0.25);
+  border-color: rgba(34, 211, 238, 0.6);
+  color: #22D3EE;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 14px rgba(6, 182, 212, 0.35);
 }
 
 /* ── Search Bar ── */
@@ -199,15 +266,46 @@ body {
   padding: 0 20px 14px;
 }
 
-.search-wrapper {
+.search-wrapper.icu-search-wrapper {
   position: relative;
   display: flex;
   align-items: center;
 }
 
-.search-icon {
+.icu-search-icon {
   position: absolute;
-  left: 14px;
+  left: 16px;
+  color: #93C5FD;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+}
+
+.icu-search-input {
+  width: 100%;
+  height: 46px;
+  padding: 0 44px 0 46px;
+  border: 1.5px solid rgba(147, 197, 253, 0.3);
+  border-radius: var(--radius-full);
+  background: rgba(2, 30, 58, 0.6);
+  color: var(--white);
+  font-size: 0.92rem;
+  font-family: inherit;
+  outline: none;
+  backdrop-filter: blur(12px);
+  transition: var(--transition-fast);
+}
+
+.icu-search-input::placeholder {
+  color: rgba(219, 234, 254, 0.6);
+}
+
+.icu-search-input:focus {
+  border-color: #22D3EE;
+  background: rgba(2, 30, 58, 0.85);
+  box-shadow: 0 0 0 4px rgba(34, 211, 238, 0.25);
+}
   font-size: 16px;
   opacity: 0.7;
   color: var(--orange-700);
