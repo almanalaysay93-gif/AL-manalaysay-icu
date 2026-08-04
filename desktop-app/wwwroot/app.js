@@ -758,10 +758,12 @@ function getFilteredDrugs() {
 
 function renderCategoryPills() {
   const container = document.getElementById('categoryPills');
-  container.innerHTML = CATEGORIES.map(cat => `
+  container.innerHTML = CATEGORIES.map((cat, idx) => `
     <button class="category-pill ${state.selectedCategory === cat.key ? 'active' : ''}"
+            style="animation-delay: ${idx * 45}ms"
             onclick="selectCategory('${cat.key}')">
-      ${cat.icon} ${cat.label}
+      <span class="cat-pill-icon">${cat.icon}</span>
+      <span class="cat-pill-label">${cat.label}</span>
     </button>
   `).join('');
 }
