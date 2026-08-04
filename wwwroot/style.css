@@ -150,42 +150,86 @@ body {
 }
 
 .header-top {
-  display: flex;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
   align-items: center;
-  justify-content: space-between;
   padding: 14px 20px 10px;
+  gap: 16px;
 }
 
-.header-brand {
+.header-left-space {
+  grid-column: 1;
+}
+
+.header-brand.icu-monitor-frame {
+  grid-column: 2;
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 14px;
+  padding: 8px 24px;
+  background: linear-gradient(135deg, rgba(2, 35, 68, 0.82) 0%, rgba(8, 55, 102, 0.82) 100%);
+  border: 1.5px solid rgba(34, 211, 238, 0.4);
+  border-radius: var(--radius-xl);
+  box-shadow: 0 8px 25px rgba(2, 35, 68, 0.6), inset 0 1px 2px rgba(255, 255, 255, 0.25);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  text-align: center;
+}
+
+.header-brand.icu-monitor-frame::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle, rgba(34, 211, 238, 0.15) 0%, transparent 65%);
+  pointer-events: none;
+  animation: telemetryPulseGlow 4s infinite ease-in-out;
+}
+
+@keyframes telemetryPulseGlow {
+  0%, 100% { opacity: 0.5; transform: scale(1); }
+  50% { opacity: 0.95; transform: scale(1.1); }
+}
+
+.header-brand.icu-monitor-frame:hover {
+  border-color: #22D3EE;
+  box-shadow: 0 12px 32px rgba(34, 211, 238, 0.4), inset 0 1px 3px rgba(255, 255, 255, 0.4);
+  transform: translateY(-2px);
 }
 
 .icu-brand-badge {
   width: 44px;
   height: 44px;
-  background: linear-gradient(135deg, rgba(6, 182, 212, 0.25), rgba(37, 99, 235, 0.35));
-  border: 1.5px solid rgba(34, 211, 238, 0.45);
+  flex-shrink: 0;
+  background: linear-gradient(135deg, rgba(6, 182, 212, 0.3), rgba(37, 99, 235, 0.4));
+  border: 1.5px solid rgba(34, 211, 238, 0.5);
   border-radius: var(--radius-md);
   display: flex;
   align-items: center;
   justify-content: center;
   color: #22D3EE;
-  box-shadow: 0 4px 15px rgba(6, 182, 212, 0.3);
+  box-shadow: 0 4px 16px rgba(6, 182, 212, 0.4);
   backdrop-filter: blur(10px);
   transition: var(--transition-fast);
 }
 
 .icu-brand-badge:hover {
-  transform: scale(1.05);
+  transform: scale(1.08) rotate(5deg);
   border-color: #22D3EE;
-  box-shadow: 0 6px 20px rgba(34, 211, 238, 0.5);
+  box-shadow: 0 6px 24px rgba(34, 211, 238, 0.6);
 }
 
 .header-title {
   display: flex;
   flex-direction: column;
+  align-items: center;
+  justify-content: center;
 }
 
 .icu-status-pill {
@@ -193,6 +237,10 @@ body {
   align-items: center;
   gap: 6px;
   margin-bottom: 2px;
+  padding: 2px 10px;
+  background: rgba(16, 185, 129, 0.15);
+  border: 1px solid rgba(16, 185, 129, 0.35);
+  border-radius: var(--radius-full);
 }
 
 .icu-live-dot {
@@ -200,40 +248,46 @@ body {
   height: 7px;
   background: #10B981;
   border-radius: 50%;
-  box-shadow: 0 0 8px #10B981;
-  animation: livePulse 2s infinite;
+  box-shadow: 0 0 10px #10B981, 0 0 4px #10B981;
+  animation: livePulse 1.8s infinite ease-in-out;
 }
 
 @keyframes livePulse {
   0%, 100% { opacity: 1; transform: scale(1); }
-  50% { opacity: 0.4; transform: scale(0.85); }
+  50% { opacity: 0.35; transform: scale(0.8); }
 }
 
 .icu-status-text {
   font-size: 0.62rem;
   font-weight: 800;
-  letter-spacing: 0.8px;
+  letter-spacing: 1px;
   color: #22D3EE;
   text-transform: uppercase;
 }
 
 .header-title h1 {
-  font-size: 1.15rem;
-  font-weight: 800;
+  font-size: 1.25rem;
+  font-weight: 900;
   letter-spacing: -0.02em;
-  line-height: 1.2;
-  color: #FFFFFF;
+  line-height: 1.25;
+  background: linear-gradient(180deg, #FFFFFF 0%, #E0F2FE 55%, #BAE6FD 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.4));
 }
 
 .header-title p {
-  font-size: 0.68rem;
-  opacity: 0.85;
-  font-weight: 600;
-  letter-spacing: 0.05em;
-  color: var(--blue-200);
+  font-size: 0.66rem;
+  font-weight: 800;
+  letter-spacing: 1px;
+  color: #38BDF8;
+  text-transform: uppercase;
+  margin-top: 1px;
 }
 
 .header-actions {
+  grid-column: 3;
+  justify-self: end;
   display: flex;
   gap: 10px;
 }
