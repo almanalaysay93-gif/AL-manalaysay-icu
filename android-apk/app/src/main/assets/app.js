@@ -806,7 +806,15 @@ function closeCalculator() {
 function renderCalculatorPanel(drug) {
   const panel = document.getElementById('calcPanelContent');
 
-  // Header
+  // Header content and background image
+  const key = state.selectedDrug;
+  const header = document.querySelector('.calc-panel-header');
+  if (header && key) {
+    header.style.backgroundImage = `linear-gradient(180deg, rgba(2, 59, 114, 0.55) 0%, rgba(15, 23, 42, 0.88) 100%), url('assets/meds/${key}.png')`;
+    header.style.backgroundSize = 'cover';
+    header.style.backgroundPosition = 'center';
+  }
+
   document.getElementById('calcDrugName').textContent = drug.name;
   document.getElementById('calcDrugGeneric').textContent = drug.generic;
   document.getElementById('calcDrugFormulation').textContent = drug.formulation;
