@@ -81,8 +81,8 @@ const DRUGS = {
   },
 
   levophed: {
-    name: 'Levophed',
-    generic: 'Norepinephrine',
+    name: 'Norepinephrine',
+    generic: 'Norepinephrine Bitartrate',
     category: 'vasopressor',
     categoryLabel: 'Vasopressor',
     icon: '💉',
